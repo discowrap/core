@@ -8,19 +8,24 @@ export abstract class IntegrationTest {
     this._testIndexName = `test_index_${uuidv4()}`;
   }
 
-  testIndexName() {
-    return this._testIndexName;
-  }
-
   async abstract setup(): Promise<this>;
 
   async abstract search(parameters: { [key: string]: any }, verbose: true): Promise<EngineResponse>;
 
   async abstract teardown(): Promise<EngineResponse>;
 
-  async run(func) {
+  async run(func: { (IntegrationTest): Promise<any> }) {
     return this.setup()
       .then(() => func(this))
+      .finally(() => this.teardown());
+  }
+
+  async runAll(funcs: Array<{ (IntegrationTest): Promise<any> }>) {
+    return this.setup()
+      .then(() => {
+        const promises = funcs.map(f => f(this));
+        return Promise.all(promises)
+      })
       .finally(() => this.teardown());
   }
 }
