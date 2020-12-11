@@ -1,0 +1,45 @@
+{
+  "name": "@discowrap/core",
+  "version": "0.0.1-draft.1",
+  "type": "commonjs",
+  "description": "Discowrap is a set of tools and practices to facilitate rapid development and iteration of search-centric applications.",
+  "main": "./build/index.js",
+  "typings": "./build/index.d.ts",
+  "scripts": {
+    "test": "jest --runInBand",
+    "build": "ttsc",
+    "clean": "rm -r build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/discowrap/core.git"
+  },
+  "keywords": [
+    "search",
+    "discovery",
+    "rapid",
+    "prototyping"
+  ],
+  "author": "Peter Dixon-Moses",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/discowrap/core/issues"
+  },
+  "homepage": "https://github.com/discowrap/core#readme",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "glob": "^7.1.6",
+    "ts-node": "^9.1.1",
+    "ttypescript": "^1.5.12",
+    "typescript-transform-paths": "^2.0.1",
+    "universalify": "^1.0.0"
+  },
+  "devDependencies": {
+    "fs-extra": "^9.0.1",
+    "@types/jest": "^26.0.8",
+    "@types/node": "^14.0.27",
+    "jest": "^26.2.2",
+    "ts-jest": "^26.1.4",
+    "typescript": "^3.9.7"
+  }
+}
