@@ -46,31 +46,84 @@ export class ProjectStructure {
 
 
   types() {
-    return Object.keys(this._definitionTypes);
+    return this._definitionTypes
+      .map(dt => dt.type);
   }
 
   srcPathForType(type: string) {
-    return `${this._definitionTypes[type].src.dir}/*.@(${this._definitionTypes[type].src.extension.join("|")})`;
+    const matchingSrc = this._definitionTypes
+      .filter(dt => dt.type === type)
+      .map(dt => dt.src);
+
+    // TODO:  Can we validate ProjectStructure with JSONSchema, so we don't need all this cruft?
+    if (matchingSrc.length === 0) {
+      return null;
+    }
+
+    if (!("dir" in matchingSrc[0]) || !("extension" in matchingSrc[0])) {
+      return null;
+    }
+
+    return `${matchingSrc[0].dir}/*.@(${matchingSrc[0].extension.join("|")})`;
   }
 
-  definitionNameFromSrcPath(definitionPath: string, type: string) {
-    const re = new RegExp(`${this._definitionTypes[type].src.dir}/([-a-zA-Z0-9_]+).(?:${this._definitionTypes[type].src.extension.join("|")})`);
-    const matches = re.exec(definitionPath);
-    if (matches.length < 2) {
-      console.log(`No ${this._definitionTypes[type]} matching expression ${re} found in ${definitionPath}`);
+  definitionNameFromSrcPath(definitionSrcPath: string, type: string) {
+    const matchingSrc = this._definitionTypes
+      .filter(dt => dt.type === type)
+      .map(dt => dt.src);
+
+    // TODO:  Can we validate ProjectStructure with JSONSchema, so we don't need all this cruft?
+    if (matchingSrc.length === 0) {
+      return null;
+    }
+
+    if (!("dir" in matchingSrc[0]) || !("extension" in matchingSrc[0])) {
+      return null;
+    }
+
+    const re = new RegExp(`${matchingSrc[0].dir}/([-a-zA-Z0-9_]+).(?:${matchingSrc[0].extension.join("|")})`);
+    const matches = re.exec(definitionSrcPath);
+    if (!matches || matches.length < 2) {
+      console.log(`No ${type} matching expression ${re} found in ${definitionSrcPath}`);
+      return null;
     }
 
     return matches[1];
   }
 
   installPath(name: string, type: string) {
-    return this._definitionTypes[type].install.dir
+    const matchingInstall = this._definitionTypes
+      .filter(dt => dt.type === type)
+      .map(dt => dt.install);
+
+    // TODO:  Can we validate ProjectStructure with JSONSchema, so we don't need all this cruft?
+    if (matchingInstall.length === 0) {
+      return null;
+    }
+
+    if (!("dir" in matchingInstall[0]) || !("extension" in matchingInstall[0])) {
+      return null;
+    }
+
+    return matchingInstall[0].dir
       + "/"
       + name
-      + this._definitionTypes[type].install.extension;
+      + matchingInstall[0].extension;
   }
 
   deployedName(name: string, type: string): string {
-    return `${this._definitionTypes[type].deploy.name_prefix}${name}`;
+    const matchingDeploy = this._definitionTypes
+      .filter(dt => dt.type === type)
+      .map(dt => dt.deploy);
+
+    if (matchingDeploy.length === 0) {
+      return null;
+    }
+
+    if (!("name_prefix" in matchingDeploy[0])) {
+      return null;
+    }
+
+    return `${matchingDeploy[0].name_prefix}${name}`;
   }
 }

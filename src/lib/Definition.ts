@@ -13,8 +13,9 @@
 
 import {outputFile} from "fs-extra";
 import {EngineResponse} from "./EngineResponse";
+import {Installable} from "./behaviors/Installable";
 
-export abstract class Definition {
+export abstract class Definition implements Installable {
   _name: string;
 
   constructor(name) {
@@ -32,7 +33,7 @@ export abstract class Definition {
   install(path: string): Promise<string> {
     return this.transform(false)
       .then(transformed => outputFile(path, transformed))
-      .then(() => Promise.resolve(path))
+      .then(() => path)
       .catch(err => Promise.reject(err));
   }
 

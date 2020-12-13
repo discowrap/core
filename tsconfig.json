@@ -11,10 +11,10 @@
     "baseUrl": ".",
     "declaration": true,
     "declarationMap": true,
-    "rootDir": ".",
     "composite": true,
+    "rootDir": ".",
     "paths": {
-      "lib/*": ["src/lib/*"]
+      "lib/*": ["src/lib/*", "build/src/lib/*"]
     },
     "plugins": [
       { "transform": "typescript-transform-paths" }
@@ -24,6 +24,12 @@
     "node_modules"
   ],
   "include": [
-    "index.ts", "src/lib/**/*", "test/lib/**/*", "test/testproject/**/*"
+    "index.ts",
+    "src/lib/*.ts",
+    "src/lib/actors/*.ts",
+    "src/lib/behaviors/*.ts",
+    "test/lib/**/*",
+    "test/testproject/**/*",
+    "node_modules/@types/jest/index.d.ts"
   ]
 }
