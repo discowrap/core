@@ -1,4 +1,5 @@
 export { Definition } from './src/lib/Definition';
+export { DefinitionDescriptor } from './src/lib/DefinitionDescriptor';
 export { Engine } from './src/lib/Engine';
 export { EngineResponse, successful } from './src/lib/EngineResponse';
 export { JSONDefinition } from './src/lib/JSONDefinition';
