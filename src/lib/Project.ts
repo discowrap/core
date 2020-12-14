@@ -37,12 +37,14 @@ export class Project {
   }
 
   async deploy(searchHost: string, replace: boolean): Promise<Array<string>> {
-    return Promise.all(
-      this._structure.types()
-        .flatMap(
-          definitionType => this._deployDefinitions(this.definitionDescriptorsFor(definitionType), searchHost, replace)
+    // Intentionally serialized, in case of any sequential deployment dependencies
+    return this._structure.types().reduce((promiseChain, definitionType) => {
+      return promiseChain.then(chainResults =>
+        this._deployDefinitions(this.definitionDescriptorsFor(definitionType), searchHost, replace)
+          .then(currentResult => [ ...chainResults, currentResult ]
         )
-    ).then(responses => [].concat(...responses));
+      );
+    }, Promise.resolve([])).then(responses => [].concat(...responses));
   }
 
   private _installDefinitions(descriptors: Array<DefinitionDescriptor>): Promise<Array<string>> {
